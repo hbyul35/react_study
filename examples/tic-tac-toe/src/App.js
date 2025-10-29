@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
 
-function App() {
+function Square({ value, onSquareClick }) {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <button className="square" onClick={onSquareClick}>
+      {value}
+    </button>
+  );
+}
+
+function Board() {
+  const [squares, setSquares] = useState(Array(9).fill(null));
+  const [xIsNext, setXIsNext] = useState(true);
+
+  function handleClick(i) {
+    if (squares[i]) return;
+    const nextSquares = squares.slice();
+    nextSquares[i] = xIsNext ? "X" : "O";
+    setSquares(nextSquares);
+    setXIsNext(!xIsNext);
+  }
+
+  return (
+    <div>
+      <div className="board-row">
+        {squares.slice(0, 3).map((val, i) => (
+          <Square key={i} value={val} onSquareClick={() => handleClick(i)} />
+        ))}
+      </div>
+      <div className="board-row">
+        {squares.slice(3, 6).map((val, i) => (
+          <Square key={i + 3} value={val} onSquareClick={() => handleClick(i + 3)} />
+        ))}
+      </div>
+      <div className="board-row">
+        {squares.slice(6, 9).map((val, i) => (
+          <Square key={i + 6} value={val} onSquareClick={() => handleClick(i + 6)} />
+        ))}
+      </div>
     </div>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <div className="game">
+      <h1>Tic Tac Toe</h1>
+      <Board />
+    </div>
+  );
+}
